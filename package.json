@@ -2,6 +2,13 @@
   "name": "saseulToken",
   "version": "1.0.0",
   "license": "MIT",
+  "scripts": {
+    "transfer": "node dist/transfer.js",
+    "transfer:dev": "ts-node-dev transfer.ts",
+    "main": "node dist/main.js",
+    "main:dev": "ts-node-dev main.ts",
+    "build": "tsc"
+  },
   "dependencies": {
     "config-ini-parser": "^1.6.1",
     "path": "^0.12.7",

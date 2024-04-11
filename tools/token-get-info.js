@@ -3,7 +3,7 @@ const path = require("path");
 const fs = require("fs");
 const ConfigIniParser = require("config-ini-parser").ConfigIniParser;
 
-const space = "myhanstoken";
+const space = "myhanstotoken";
 
 (async function () {
   let root = path.dirname(__dirname);
@@ -29,7 +29,7 @@ const space = "myhanstoken";
   result = await SASEUL.Rpc.request(
     SASEUL.Rpc.signedRequest(
       {
-        cid: "a026c1cefdef0940c43967eca7e21e06aee33e6394b6819a3c6ff6ea2724d7c9",
+        cid: cid,
         type: "GetInfo",
       },
       keypair.private_key
