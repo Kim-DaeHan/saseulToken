@@ -1,4 +1,5 @@
 import { tokenBalance } from "./tools/token-get-balance";
+import { transferToken } from "./tools/token-send";
 
 const peer = "test.saseul.net";
 const from = "5ef2a8d053577309eedb9ff0ecb2829b52e6a8bf7a55";
@@ -17,7 +18,11 @@ async function main(
   privateKey: string
 ) {
   const fromBalanceStr = await tokenBalance(peer, cid, from, privateKey);
+
+  const toBalanceStr = await tokenBalance(peer, cid, to, privateKey);
   const fromBalance = BigInt(fromBalanceStr);
+  console.log(fromBalance);
+  const toBalance = BigInt(toBalanceStr);
   const amountBig = BigInt(amount * 10 ** decimal);
 
   if (amountBig > fromBalance) {
@@ -25,12 +30,26 @@ async function main(
   } else {
     console.log(amountBig.toString());
     console.log(fromBalance / 10n ** BigInt(decimal));
+    console.log(toBalance / 10n ** BigInt(decimal));
+    const result = await transferToken(
+      peer,
+      cid,
+      to,
+      amountBig.toString(),
+      privateKey
+    );
+
+    console.log(result);
+
+    await sleep(4000);
+
+    console.log(await tokenBalance(peer, cid, from, privateKey));
+    console.log(await tokenBalance(peer, cid, to, privateKey));
   }
-  // await sleep(4000);
 }
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-main(cid, peer, from, to, 18, 10, privateKey);
+main(cid, peer, from, to, 18, 1, privateKey);
