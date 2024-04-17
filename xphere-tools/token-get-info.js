@@ -7,7 +7,7 @@ const space = "hansToken";
 
 (async function () {
   let root = path.dirname(__dirname);
-  let _input = await fs.promises.readFile(root + "/saseul.ini", {
+  let _input = await fs.promises.readFile(root + "/xphere.ini", {
     encoding: "utf-8",
   });
   let parser = new ConfigIniParser();
@@ -29,7 +29,7 @@ const space = "hansToken";
   result = await SASEUL.Rpc.request(
     SASEUL.Rpc.signedRequest(
       {
-        cid: "3e2dba86db3807fd76acd442364788a299dc6527496b2f24bbab221417fb30fe",
+        cid: "beaa9f2ed9797a5cf22a1717c5c8b99a59b36a78466273e5b2cb047260765e8a",
         type: "GetInfo",
       },
       keypair.private_key

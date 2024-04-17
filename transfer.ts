@@ -52,4 +52,23 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-main(cid, peer, from, to, 18, 1, privateKey);
+// main(cid, peer, from, to, 18, 1, privateKey);
+
+async function getBal(
+  cid: string,
+  peer: string,
+  addr: string,
+  privateKey: string
+) {
+  const balanceStr = await tokenBalance(peer, cid, addr, privateKey);
+  const balance = BigInt(balanceStr);
+  console.log(balance);
+  console.log(balance / 10n ** BigInt(18));
+}
+
+getBal(
+  "73528624babc39648150bc23a12cf686e984e8594f901e95f2360b7f836eabc1",
+  peer,
+  "a13e57b86f8c707dad5979eca2207714a51b2e0d292c",
+  privateKey
+);

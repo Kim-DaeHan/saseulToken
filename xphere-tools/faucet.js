@@ -3,11 +3,13 @@ const path = require("path");
 const fs = require("fs");
 const ConfigIniParser = require("config-ini-parser").ConfigIniParser;
 
-const space = "hansToken";
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 (async function () {
   let root = path.dirname(__dirname);
-  let _input = await fs.promises.readFile(root + "/saseul.ini", {
+  let _input = await fs.promises.readFile(root + "/xphere.ini", {
     encoding: "utf-8",
   });
   let parser = new ConfigIniParser();
@@ -16,6 +18,8 @@ const space = "hansToken";
 
   let peer = parser.get("Network", "peers[]").replace(/^"(.*)"$/, "$1");
 
+  console.log(peer);
+
   SASEUL.Rpc.endpoint(peer);
 
   let json = await fs.promises.readFile(root + "/keypair.json", {
@@ -23,17 +27,35 @@ const space = "hansToken";
   });
   let keypair = JSON.parse(json);
 
-  let cid = SASEUL.Enc.cid(keypair.address, space);
   let result;
+
+  try {
+    result = await SASEUL.Rpc.broadcastTransaction(
+      SASEUL.Rpc.signedTransaction(
+        {
+          type: "Faucet",
+        },
+        keypair.private_key
+      )
+    );
+  } catch (error) {
+    console.log(error.message);
+  }
+
+  console.dir(result);
+  if (result.code === 200) {
+    await sleep(3000);
+  }
 
   result = await SASEUL.Rpc.request(
     SASEUL.Rpc.signedRequest(
       {
-        cid: "3e2dba86db3807fd76acd442364788a299dc6527496b2f24bbab221417fb30fe",
-        type: "GetInfo",
+        type: "GetBalance",
+        address: keypair.address,
       },
       keypair.private_key
     )
   );
-  console.dir(result);
+  // console.dir("Current Balance: " + result.data.balance);
+  console.dir("Current Balance: " + JSON.stringify(result));
 })();
