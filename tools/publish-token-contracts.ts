@@ -1,7 +1,4 @@
 const SASEUL = require("saseul");
-// import path from "path";
-// import fs from "fs";
-// import { ConfigIniParser } from "config-ini-parser";
 
 import {
   approve,
@@ -22,7 +19,6 @@ export async function publishToken(
 ) {
   SASEUL.Rpc.endpoint(peer);
 
-  // let contract = new SASEUL.SmartContract.Contract(address, space);
   let contract = Contract(address, space);
 
   await Promise.all([
@@ -44,32 +40,13 @@ const Contract = function (writer, nonce) {
   let _writer = writer;
   let _nonce = nonce;
 
-  function method(name) {
-    return _methods[name];
-  }
-
-  function methods(full = false) {
-    let result = {};
-
-    for (let i in _methods) {
-      result[i] = full ? _methods[i].compile() : _methods[i].type();
-    }
-
-    return result;
-  }
-
   async function addMethod(data) {
     data.writer(_writer);
     data.nonce(_nonce);
     _methods[data.name()] = data;
   }
 
-  async function publish(privateKey) {
-    const aa = await register(privateKey, "Publish");
-    console.log("aa: ", aa);
-  }
-
-  async function register(privateKey, type = "Register") {
+  async function publish(privateKey, type = "Publish") {
     async function broadcast(method) {
       let timestamp = SASEUL.Util.utime() + 1000000;
       let item = { type: type, code: method.compile(), timestamp: timestamp };
@@ -78,69 +55,74 @@ const Contract = function (writer, nonce) {
 
       async function check() {
         console.log("Checking results... " + thash);
-        SASEUL.Rpc.round().then(async function (rs) {
+        try {
+          const rs = await SASEUL.Rpc.round();
           if (
             typeof rs.data !== "undefined" &&
             rs.data.main.block.s_timestamp > timestamp
           ) {
-            SASEUL.Rpc.request(
+            const code = await SASEUL.Rpc.request(
               SASEUL.Rpc.signedRequest({
                 type: "GetCode",
                 ctype: method.type(),
                 target: method.mid(),
               }),
               SASEUL.Sign.privateKey()
-            ).then(async function (code) {
-              for (let i in code.data) {
-                if (code.data[i] === null) {
-                  console.log("Failed. Resending code... " + thash);
-                  await broadcast(method);
-                } else {
-                  console.log("Success! " + thash);
-                }
+            );
+
+            for (let i in code.data) {
+              if (code.data[i] === null) {
+                console.log("Failed. Resending code...1 " + thash);
+                await broadcast(method);
+              } else {
+                console.log("Success! 123! " + thash);
               }
-            });
+            }
           } else {
-            setTimeout(check, 2000);
-            // await check();
+            await check();
           }
-        });
+          return thash;
+        } catch (error) {
+          console.error(error);
+        }
       }
 
-      SASEUL.Rpc.broadcastTransaction(signedTx)
-        .then(function (rs) {
-          console.log("1");
-          if (rs.code === 200) {
-            console.log("2");
-            console.log(rs.data);
-            setTimeout(check, 2000);
-          } else if (rs.code !== 999) {
-            console.log("3");
-            console.log("Failed. Resending code... " + thash);
-            broadcast(method);
-          } else {
-            console.log("4");
-            console.dir(rs);
-          }
-        })
-        .catch(function (e) {
-          console.dir(e);
-        });
+      try {
+        const rs = await SASEUL.Rpc.broadcastTransaction(signedTx);
+
+        if (rs.code === 200) {
+          console.log("200: ", rs.data);
+          const chk = await check();
+          console.log("chk: ", chk);
+          return chk;
+        } else if (rs.code !== 999) {
+          console.log("Failed. Resending code...2 " + thash);
+          await broadcast(method);
+        } else {
+          console.log("999: ", method._name);
+          console.dir(rs);
+          return false;
+        }
+      } catch (error) {
+        console.error(error);
+      }
     }
 
-    console.log("5");
-
+    let test = [];
+    // const methodArray = [];
     for (let i in _methods) {
-      await broadcast(_methods[i]);
+      console.log("i: ", i);
+      // methodArray.push(broadcast(_methods[i]));
+      test.push(await broadcast(_methods[i]));
     }
+
+    // const test = await Promise.all(methodArray);
+    console.log("test: ");
+    console.log(test);
   }
 
-  // 반환할 객체 정의
   return {
-    method,
-    methods,
     addMethod,
     publish,
-    register,
   };
 };

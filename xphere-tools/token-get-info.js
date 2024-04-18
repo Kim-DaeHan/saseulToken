@@ -35,5 +35,7 @@ const space = "hansToken";
       keypair.private_key
     )
   );
+
+  console.log(keypair.private_key);
   console.dir(result);
 })();
