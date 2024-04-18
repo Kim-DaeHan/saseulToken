@@ -32,7 +32,10 @@ export async function publishToken(
     contract.addMethod(getOrder(address, space)),
   ]);
 
-  await contract.publish(privateKey);
+  const result = await contract.publish(privateKey);
+  const isPublish = result.find((publish) => !publish.publish);
+  console.log("result: ", result);
+  return isPublish;
 }
 
 const Contract = function (writer, nonce) {
@@ -72,16 +75,16 @@ const Contract = function (writer, nonce) {
 
             for (let i in code.data) {
               if (code.data[i] === null) {
-                console.log("Failed. Resending code...1 " + thash);
+                console.log("Failed. Resending code... " + thash);
                 await broadcast(method);
               } else {
-                console.log("Success! 123! " + thash);
+                console.log("Success! " + thash);
               }
             }
           } else {
             await check();
           }
-          return thash;
+          return { publish: true };
         } catch (error) {
           console.error(error);
         }
@@ -91,34 +94,30 @@ const Contract = function (writer, nonce) {
         const rs = await SASEUL.Rpc.broadcastTransaction(signedTx);
 
         if (rs.code === 200) {
-          console.log("200: ", rs.data);
           const chk = await check();
-          console.log("chk: ", chk);
           return chk;
         } else if (rs.code !== 999) {
-          console.log("Failed. Resending code...2 " + thash);
+          console.log("Failed. Resending code... " + thash);
           await broadcast(method);
         } else {
-          console.log("999: ", method._name);
           console.dir(rs);
-          return false;
+          return { publish: false, method: method._name, msg: rs.msg };
         }
       } catch (error) {
         console.error(error);
       }
     }
 
-    let test = [];
+    let methodArray = [];
     // const methodArray = [];
     for (let i in _methods) {
-      console.log("i: ", i);
       // methodArray.push(broadcast(_methods[i]));
-      test.push(await broadcast(_methods[i]));
+      methodArray.push(await broadcast(_methods[i]));
     }
 
     // const test = await Promise.all(methodArray);
-    console.log("test: ");
-    console.log(test);
+
+    return methodArray;
   }
 
   return {
