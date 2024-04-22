@@ -21,4 +21,22 @@ function tt() {
   cc();
 }
 
-tt();
+// tt();
+
+async function dd(i) {
+  return i + 1;
+}
+
+async function mm() {
+  const methodArray = [];
+  for (let i = 0; i < 5; i++) {
+    methodArray.push(() => dd(i));
+  }
+  console.log(methodArray);
+
+  const test = await Promise.all(methodArray.map((func) => func()));
+
+  console.log(test);
+}
+
+mm();

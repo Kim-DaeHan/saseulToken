@@ -94,6 +94,7 @@ const Contract = function (writer, nonce) {
         const rs = await SASEUL.Rpc.broadcastTransaction(signedTx);
 
         if (rs.code === 200) {
+          console.log(rs.data);
           const chk = await check();
           return chk;
         } else if (rs.code !== 999) {
