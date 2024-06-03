@@ -7,13 +7,16 @@
     "transfer:dev": "ts-node-dev transfer.ts",
     "main": "node dist/main.js",
     "main:dev": "ts-node-dev main.ts",
+    "xphere": "node dist/xphereTest.js",
+    "xphere:dev": "ts-node-dev xphereTest.ts",
     "build": "tsc"
   },
   "dependencies": {
     "config-ini-parser": "^1.6.1",
     "path": "^0.12.7",
     "prompt-sync": "^4.2.0",
-    "saseul": "^2.7.15"
+    "saseul": "^2.8.0",
+    "tweetnacl": "^1.0.3"
   },
   "devDependencies": {
     "@types/node": "^20.12.4"

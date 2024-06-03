@@ -39,4 +39,13 @@ async function mm() {
   console.log(test);
 }
 
-mm();
+// mm();
+
+try {
+  var foo = "inside try";
+  console.log(foo); // 'inside try'
+} catch (error) {
+  console.error(error);
+}
+
+console.log(foo); // 'inside try'
