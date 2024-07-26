@@ -14,8 +14,8 @@ const ConfigIniParser = require("config-ini-parser").ConfigIniParser;
 
   let peer = parser.get("Network", "peers[]").replace(/^"(.*)"$/, "$1");
 
-  // SASEUL.Rpc.endpoint(peer);
-  SASEUL.Rpc.endpoint("xphere-main.zigap.io");
+  SASEUL.Rpc.endpoint(peer);
+  // SASEUL.Rpc.endpoint("xphere-main.zigap.io");
 
   let json = await fs.promises.readFile(root + "/keypair.json", {
     encoding: "utf-8",
@@ -28,7 +28,8 @@ const ConfigIniParser = require("config-ini-parser").ConfigIniParser;
     SASEUL.Rpc.signedRequest(
       {
         type: "GetBalance",
-        address: "b24b0d542080b2bf9f766daa857c7f95dca6bfa53ff8",
+        // address: "d342c6ba0a7ff35607e29bb3550e134a0c45eb5fd55f",
+        address: "cd32734211d10abaab69d2d7cee927b09b15b5bbb52b",
       },
       "c0965d23e2c4d5745cdf2b1a5619e62cdec8f221d8b35555b1061641555aa17d"
     )

@@ -1,12 +1,15 @@
 import { publishToken } from "./tools/publish-token-contracts";
 import { mintToken } from "./tools/token-mint";
 
-const peer = "test.saseul.net";
-// const peer = "43.225.140.61";
+// const peer = "test.saseul.net";
+const peer = "43.225.140.61";
+const owner = "d342c6ba0a7ff35607e29bb3550e134a0c45eb5fd55f";
 const address = "cd32734211d10abaab69d2d7cee927b09b15b5bbb52b";
 const privateKey =
   "eef6ecd35a4c70520ffaecf2b3d84e2160c5389500551641af78aa739c4f1c46";
-const space = "a1111112222222334454241131111111211111";
+// const privateKey =
+//   "67a33840282655346d047e6c83cce778a8477199d624f2834a8eb6df2ec71031";
+const space = "test45552225";
 
 async function main(
   space: string,
@@ -14,7 +17,7 @@ async function main(
   address: string,
   privateKey: string
 ) {
-  const publish = await publishToken(space, peer, address, privateKey);
+  const publish = await publishToken(space, peer, address, privateKey, owner);
 
   if (publish) {
     console.error(publish.method, " 에서 이런 에러", publish.msg);
@@ -23,9 +26,9 @@ async function main(
 
   const res = await mintToken(
     space,
-    "a11111122222232345444413115111112111111",
-    "ht",
-    "100000000000000000000",
+    "TestToken3333",
+    "t3",
+    "1000000000000000000000",
     18,
     peer,
     address,

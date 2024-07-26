@@ -2,7 +2,7 @@ const SASEUL = require("saseul");
 
 let op = SASEUL.SmartContract.Operator;
 
-export function mint(writer: string, space: string) {
+export function mint(writer: string, space: string, owner: string) {
   let condition: boolean;
   let err_msg: string;
   let update: any;
@@ -55,6 +55,7 @@ export function mint(writer: string, space: string) {
 
   // writer === from
   condition = op.eq(writer, from);
+
   err_msg = "You are not the contract writer.";
   method.addExecution(op.condition(condition, err_msg));
 
@@ -74,11 +75,12 @@ export function mint(writer: string, space: string) {
     symbol: symbol,
     total_supply: amount,
     decimal: decimal,
+    owner: owner,
   });
   method.addExecution(update);
 
   // from balance = amount;
-  update = op.write_universal("balance", from, amount);
+  update = op.write_universal("balance", owner, amount);
   method.addExecution(update);
 
   return method;

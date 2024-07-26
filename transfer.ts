@@ -1,12 +1,12 @@
 import { tokenBalance } from "./tools/token-get-balance";
 import { transferToken } from "./tools/token-send";
 
-const peer = "test.saseul.net";
-const from = "5ef2a8d053577309eedb9ff0ecb2829b52e6a8bf7a55";
-const to = "d342c6ba0a7ff35607e29bb3550e134a0c45eb5fd55f";
+const peer = "43.225.140.61";
+const from = "d342c6ba0a7ff35607e29bb3550e134a0c45eb5fd55f";
+const to = "cd32734211d10abaab69d2d7cee927b09b15b5bbb52b";
 const privateKey =
-  "2bb8a51e40f9c95885d883f573e526d4be6659348c5a0ce58f5468c8d056b242";
-const cid = "8100daa7415e7396625548d03dbe80fc6f3a65694458337b1911433f7d61981c";
+  "67a33840282655346d047e6c83cce778a8477199d624f2834a8eb6df2ec71031";
+const cid = "e517b26bc872081a1009771163c82b35caa2bd9ef553834ca32da3b25fb3906b";
 
 async function main(
   cid: string,
@@ -52,7 +52,7 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-// main(cid, peer, from, to, 18, 1, privateKey);
+main(cid, peer, from, to, 18, 1, privateKey);
 
 async function getBal(
   cid: string,
@@ -67,8 +67,8 @@ async function getBal(
 }
 
 getBal(
-  "73528624babc39648150bc23a12cf686e984e8594f901e95f2360b7f836eabc1",
+  "e517b26bc872081a1009771163c82b35caa2bd9ef553834ca32da3b25fb3906b",
   peer,
-  "a13e57b86f8c707dad5979eca2207714a51b2e0d292c",
+  "d342c6ba0a7ff35607e29bb3550e134a0c45eb5fd55f",
   privateKey
 );

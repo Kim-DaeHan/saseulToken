@@ -1,41 +1,38 @@
 const SASEUL = require("saseul");
 
 import {
-  approve,
-  cancel,
-  deposit,
-  getBalance,
-  getInfo,
-  getOrder,
+  issue,
   mint,
   send,
-} from "../token/all";
+  ownerOf,
+  listItem,
+  getInfo,
+  balanceOf,
+} from "../xrc721/all";
 
-export async function publishToken(
+export async function publishNft(
   space: string,
   peer: string,
   address: string,
-  privateKey: string,
-  owner: string
+  privateKey: string
 ) {
   SASEUL.Rpc.endpoint(peer);
 
   let contract = Contract(address, space);
 
   await Promise.all([
-    contract.addMethod(mint(address, space, owner)),
-    contract.addMethod(getInfo(address, space)),
-    contract.addMethod(send(address, space)),
-    contract.addMethod(getBalance(address, space)),
-    contract.addMethod(deposit(address, space)),
-    contract.addMethod(approve(address, space)),
-    contract.addMethod(cancel(address, space)),
-    contract.addMethod(getOrder(address, space)),
+    // contract.addMethod(issue(address, space)),
+    // contract.addMethod(mint(address, space)),
+    // contract.addMethod(send(address, space)),
+    // contract.addMethod(ownerOf(address, space)),
+    // contract.addMethod(listItem(address, space)),
+    // contract.addMethod(getInfo(address, space)),
+    contract.addMethod(balanceOf(address, space)),
   ]);
 
   const result = await contract.publish(privateKey);
   const isPublish = result.find((publish) => !publish.publish);
-  console.log("result: ", result);
+  console.log("nft result: ", result);
   return isPublish;
 }
 

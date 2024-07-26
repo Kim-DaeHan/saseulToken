@@ -29,11 +29,11 @@ const space = "MY TOKEN";
   result = await SASEUL.Rpc.request(
     SASEUL.Rpc.signedRequest(
       {
-        cid: "beaa9f2ed9797a5cf22a1717c5c8b99a59b36a78466273e5b2cb047260765e8a",
+        cid: "4032780e2cb5ef257dd931a99d0b7964c09a5b3e942333989f3fbcc5f26a8236",
         type: "GetBalance",
-        address: "cd32734211d10abaab69d2d7cee927b09b15b5bbb52b",
+        address: "d342c6ba0a7ff35607e29bb3550e134a0c45eb5fd55f",
       },
-      "49b3d1a37c5f29387682724fa1125ce35ed5ad411722b997c3ebcd019e28189b"
+      "eef6ecd35a4c70520ffaecf2b3d84e2160c5389500551641af78aa739c4f1c46"
     )
   );
 

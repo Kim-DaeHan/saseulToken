@@ -1,15 +1,8 @@
 const SASEUL = require("saseul");
 
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-export async function mintToken(
+export async function nftBalanceOf(
   space: string,
-  name: string,
-  symbol: string,
-  amount: string,
-  decimal: number,
+  v: string,
   peer: string,
   address: string,
   privateKey: string
@@ -19,15 +12,12 @@ export async function mintToken(
   let cid = SASEUL.Enc.cid(address, space);
   let result;
   try {
-    result = await SASEUL.Rpc.broadcastTransaction(
-      SASEUL.Rpc.signedTransaction(
+    result = await SASEUL.Rpc.request(
+      SASEUL.Rpc.signedRequest(
         {
           cid: cid,
-          type: "Mint",
-          name: name,
-          symbol: symbol,
-          amount: amount,
-          decimal: decimal,
+          type: "BalanceOf",
+          address: address,
         },
         privateKey
       )

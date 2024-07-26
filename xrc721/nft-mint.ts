@@ -1,15 +1,12 @@
 const SASEUL = require("saseul");
 
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-export async function mintToken(
+export async function nftMint(
   space: string,
   name: string,
-  symbol: string,
-  amount: string,
-  decimal: number,
+  tokenId: string,
+  description: string,
+  data: string,
+  ext: string,
   peer: string,
   address: string,
   privateKey: string
@@ -25,9 +22,10 @@ export async function mintToken(
           cid: cid,
           type: "Mint",
           name: name,
-          symbol: symbol,
-          amount: amount,
-          decimal: decimal,
+          tokenId: tokenId,
+          description: description,
+          data: data,
+          ext: ext,
         },
         privateKey
       )

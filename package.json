@@ -9,6 +9,8 @@
     "main:dev": "ts-node-dev main.ts",
     "xphere": "node dist/xphereTest.js",
     "xphere:dev": "ts-node-dev xphereTest.ts",
+    "nft": "node dist/nft.js",
+    "nft:dev": "ts-node-dev nft.ts",
     "build": "tsc"
   },
   "dependencies": {
@@ -19,6 +21,7 @@
     "tweetnacl": "^1.0.3"
   },
   "devDependencies": {
-    "@types/node": "^20.12.4"
+    "@types/node": "^20.12.4",
+    "zigap-utils": "^0.0.30"
   }
 }
