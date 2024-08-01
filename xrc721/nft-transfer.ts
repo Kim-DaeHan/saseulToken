@@ -1,8 +1,9 @@
 const SASEUL = require("saseul");
 
-export async function nftBalanceOf(
+export async function nftTransfer(
   space: string,
-  owner: string,
+  to: string,
+  tokenId: number,
   peer: string,
   address: string,
   privateKey: string
@@ -12,19 +13,19 @@ export async function nftBalanceOf(
   let cid = SASEUL.Enc.cid(address, space);
   let result;
   try {
-    result = await SASEUL.Rpc.request(
-      SASEUL.Rpc.signedRequest(
+    result = await SASEUL.Rpc.broadcastTransaction(
+      SASEUL.Rpc.signedTransaction(
         {
           cid: cid,
-          type: "BalanceOf",
-          address: owner,
+          type: "Transfer",
+          to: to,
+          tokenId: tokenId,
         },
         privateKey
       )
     );
     return {
       ...result,
-      cid: cid,
     };
   } catch (error) {
     console.log("error: ", error);

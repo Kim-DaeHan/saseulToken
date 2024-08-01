@@ -2,7 +2,7 @@ const SASEUL = require("saseul");
 
 export async function nftGetInfo(
   space: string,
-  tokenId: string,
+  tokenId: number,
   peer: string,
   address: string,
   privateKey: string

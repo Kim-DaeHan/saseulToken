@@ -3,11 +3,14 @@ const SASEUL = require("saseul");
 import {
   issue,
   mint,
-  send,
+  transfer,
   ownerOf,
   listItem,
   getInfo,
   balanceOf,
+  name,
+  symbol,
+  totalSupply,
 } from "../xrc721/all";
 
 export async function publishNft(
@@ -23,11 +26,14 @@ export async function publishNft(
   await Promise.all([
     // contract.addMethod(issue(address, space)),
     // contract.addMethod(mint(address, space)),
-    // contract.addMethod(send(address, space)),
+    // contract.addMethod(transfer(address, space)),
     // contract.addMethod(ownerOf(address, space)),
     // contract.addMethod(listItem(address, space)),
-    // contract.addMethod(getInfo(address, space)),
-    contract.addMethod(balanceOf(address, space)),
+    contract.addMethod(getInfo(address, space)),
+    // contract.addMethod(balanceOf(address, space)),
+    // contract.addMethod(name(address, space)),
+    // contract.addMethod(symbol(address, space)),
+    // contract.addMethod(totalSupply(address, space)),
   ]);
 
   const result = await contract.publish(privateKey);

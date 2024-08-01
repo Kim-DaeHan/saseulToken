@@ -2,23 +2,6 @@ const SASEUL = require("saseul");
 
 let op = SASEUL.SmartContract.Operator;
 
-// module.exports = {
-//   issue, // 최초 발행
-//   mint, // nft 발행
-//   send, // 특정 토큰을 다른 주소로 전송
-//   getInfo, // 특정 토큰 id에 대한 정보를 반환
-//   listItem, // 인벤토리 안에 있는 토큰 리스트 반환
-//   balanceOf, // 특정 주소의 잔고를 반환
-//   transfer, // 특정 양의 토큰을 한 주소에서 다른 주소로 전송
-//   ownerOf, // 특정 토큰 id에 대한 소유자 주소를 반환
-//   tokenURI, // 특정 토큰 id에 대한 메타데이터 url 반환
-//   // safeTransferFrom, // 토큰을 전송할때,
-//   // approve, // 특정 주소에게 토큰을 관리할 수 있는 권한 부여
-//   getApproved, // 특정 토큰 id에 대해 승인된 주소를 반환
-//   isApprovedForAll, // 특정 주소가 모든 토큰에 대해 관리 권한을 가지고 있는지 확인
-//   // setApprovalForAll // 특정 주소에게 모든 토큰 권한 부여
-// };
-
 export function issue(writer, space) {
   let condition, err_msg, update;
   let method = new SASEUL.SmartContract.Method({
@@ -51,11 +34,18 @@ export function issue(writer, space) {
   err_msg = "You are not the contract writer.";
   method.addExecution(op.condition(condition, err_msg));
 
-  // save info
-  update = op.write_universal("token", "name", name);
-  update = op.write_universal("token", "symbol", symbol);
-  update = op.write_universal("token", "total_supply", "0");
+  let nameHash = op.id_hash("name");
+  let symbolHash = op.id_hash("symbol");
+  let totalSupplyHash = op.id_hash("total_supply");
 
+  // save info
+  update = op.write_universal("collection", nameHash, name);
+  method.addExecution(update);
+
+  update = op.write_universal("collection", symbolHash, symbol);
+  method.addExecution(update);
+
+  update = op.write_universal("collection", totalSupplyHash, "0");
   method.addExecution(update);
 
   return method;
@@ -73,8 +63,8 @@ export function mint(writer, space) {
 
   method.addParameter({
     name: "tokenId",
-    type: "string",
-    maxlength: SASEUL.Enc.ID_HASH_SIZE,
+    type: "int",
+    maxlength: 11,
     requirements: true,
   });
   method.addParameter({
@@ -90,15 +80,9 @@ export function mint(writer, space) {
     requirements: false,
   });
   method.addParameter({
-    name: "data",
+    name: "image",
     type: "any",
     maxlength: 1048576,
-    requirements: true,
-  });
-  method.addParameter({
-    name: "ext",
-    type: "string",
-    maxlength: 50,
     requirements: true,
   });
 
@@ -106,59 +90,128 @@ export function mint(writer, space) {
   let tokenId = op.load_param("tokenId");
   let name = op.load_param("name");
   let description = op.load_param("description");
-  let contents_type = op.load_param("ext");
-  let data = op.load_param("data");
+  let image = op.load_param("image");
 
-  let tx_hash = op.load_param("hash");
   let tokenHash = op.id_hash(tokenId);
 
-  let existing_token = op.read_universal("info", tokenHash);
+  let totalSupplyHash = op.id_hash("total_supply");
 
-  // existing_template === null
-  condition = op.eq(existing_token, null);
-  err_msg = "The token already exists with the same id.";
-  method.addExecution(op.condition(condition, err_msg));
-
-  // save token_info
-  update = op.write_universal("info", tokenHash, {
-    name: name,
-    description: description,
-    publisher: from,
-    stamped_by: from,
-    contents_type: contents_type,
-    data: data,
-    contents: tx_hash,
-    tokenId: tokenId,
-  });
+  let total_supply = op.read_universal("collection", totalSupplyHash, "0");
+  update = op.write_universal(
+    "collection",
+    totalSupplyHash,
+    op.add([total_supply, "1"])
+  ); // defatul : 1
   method.addExecution(update);
 
-  let total_supply = op.read_universal("token", "total_supply", "0");
-
-  update = op.write_universal(
-    "token",
-    "total_supply",
-    op.add([total_supply, "1"])
-  );
+  // balance
+  let balance = op.read_universal("balance", from, "0");
+  update = op.write_universal("balance", from, op.add([balance, "1"]));
   method.addExecution(update);
 
   // save owner
   update = op.write_universal("owner", tokenHash, from);
   method.addExecution(update);
 
-  // inventory from = 1
-  let inventory = op.concat(["inventory_", from]);
-  update = op.write_universal(inventory, tokenHash, 1);
+  update = op.write_universal(op.concat(["inventory_", from]), tokenHash, {
+    tokenId: tokenId,
+    name: name,
+    description: description,
+    image: image,
+  });
   method.addExecution(update);
 
   return method;
 }
 
-export function send(writer, space) {
+export function ownerOf(writer, space) {
+  let condition, err_msg, response;
+  let method = new SASEUL.SmartContract.Method({
+    type: "request",
+    name: "OwnerOf",
+    version: "1",
+    space: space,
+    writer: writer,
+  });
+
+  method.addParameter({
+    name: "tokenId",
+    type: "int",
+    maxlength: 11,
+    requirements: true,
+  });
+
+  let tokenId = op.load_param("tokenId");
+  let tokenHash = op.id_hash(tokenId);
+  let owner = op.read_universal("owner", tokenHash);
+
+  // owner !== null
+  condition = op.ne(owner, null);
+  err_msg = "The token does not exist.";
+  method.addExecution(op.condition(condition, err_msg));
+
+  // return owner
+  response = op.response({
+    owner,
+  });
+
+  method.addExecution(response);
+
+  return method;
+}
+
+export function name(writer, space) {
+  let condition, err_msg, response;
+  let method = new SASEUL.SmartContract.Method({
+    type: "request",
+    name: "name",
+    version: "1",
+    space: space,
+    writer: writer,
+  });
+
+  let nameHash = op.id_hash("name");
+  let collectionName = op.read_universal("collection", nameHash);
+
+  condition = op.ne(collectionName, null);
+  err_msg = "Collection name does not exist.";
+  method.addExecution(op.condition(condition, err_msg));
+
+  response = op.response(collectionName);
+  method.addExecution(response);
+
+  return method;
+}
+
+export function symbol(writer, space) {
+  let condition, err_msg, response;
+  let method = new SASEUL.SmartContract.Method({
+    type: "request",
+    name: "symbol",
+    version: "1",
+    space: space,
+    writer: writer,
+  });
+
+  let symbolHash = op.id_hash("symbol");
+  let symbol = op.read_universal("collection", symbolHash);
+
+  condition = op.ne(symbol, null);
+  err_msg = "Token symbol does not exist.";
+  method.addExecution(op.condition(condition, err_msg));
+
+  response = op.response(symbol);
+  method.addExecution(response);
+
+  return method;
+}
+
+export function transfer(writer, space) {
   let condition, err_msg, update;
   let method = new SASEUL.SmartContract.Method({
     type: "contract",
-    name: "Send",
-    version: "6",
+    name: "Transfer", // transfer
+    version: "1",
     space: space,
     writer: writer,
   });
@@ -171,15 +224,25 @@ export function send(writer, space) {
   });
   method.addParameter({
     name: "tokenId",
-    type: "string",
-    maxlength: SASEUL.Enc.ID_HASH_SIZE,
+    type: "int",
+    maxlength: 11,
     requirements: true,
   });
 
   let from = op.load_param("from");
   let to = op.load_param("to");
   let tokenId = op.load_param("tokenId");
-  let owner = op.read_universal("owner", tokenId);
+  let tokenHash = op.id_hash(tokenId);
+
+  let from_balance = op.read_universal("balance", from, "0");
+  let to_balance = op.read_universal("balance", to, "0");
+
+  let owner = op.read_universal("owner", tokenHash);
+
+  let inventory_to = op.concat(["inventory_", to]);
+
+  let inventory_from = op.concat(["inventory_", from]);
+  let inventoryInfoOfFrom = op.read_universal(inventory_from, tokenHash);
 
   // from !== to
   condition = op.ne(from, to);
@@ -191,51 +254,107 @@ export function send(writer, space) {
   err_msg = "You are not the owner of the token.";
   method.addExecution(op.condition(condition, err_msg));
 
+  // inventoryInfoOfFrom !== null
+  condition = op.ne(inventoryInfoOfFrom, null);
+  err_msg = "the token ID does not exist in the address.";
+  method.addExecution(op.condition(condition, err_msg));
+
+  // from_balance >= 1
+  condition = op.gte(from_balance, "1");
+  err_msg = "You can't send more than what you have.";
+  method.addExecution(op.condition(condition, err_msg));
+
   // owner = to;
-  update = op.write_universal("owner", tokenId, to);
+  update = op.write_universal("owner", tokenHash, to);
   method.addExecution(update);
 
-  // inventory: from = 0
-  let inventory_from = op.concat(["inventory_", from]);
-  update = op.write_universal(inventory_from, tokenId, 0);
+  // from_balance = from_balance - amount;
+  from_balance = op.sub([from_balance, "1"]);
+  update = op.write_universal("balance", from, from_balance);
   method.addExecution(update);
 
-  // inventory: to = 1
-  let inventory_to = op.concat(["inventory_", to]);
-  update = op.write_universal(inventory_to, tokenId, 1);
+  // to_balance = to_balance + amount;
+  to_balance = op.add([to_balance, "1"]);
+  update = op.write_universal("balance", to, to_balance);
+  method.addExecution(update);
+
+  // inventory: from = {}
+  update = op.write_universal(inventory_from, tokenHash, {});
+  method.addExecution(update);
+
+  // inventory: to = token info
+  update = op.write_universal(inventory_to, tokenHash, inventoryInfoOfFrom);
   method.addExecution(update);
 
   return method;
 }
 
-export function ownerOf(writer, space) {
+export function getInfo(writer, space) {
   let condition, err_msg, response;
   let method = new SASEUL.SmartContract.Method({
     type: "request",
-    name: "OwnerOf",
-    version: "6",
+    name: "GetInfo",
+    version: "2",
     space: space,
     writer: writer,
   });
 
   method.addParameter({
     name: "tokenId",
-    type: "string",
-    maxlength: SASEUL.Enc.ID_HASH_SIZE,
+    type: "int",
+    maxlength: 11,
     requirements: true,
   });
 
   let tokenId = op.load_param("tokenId");
-  let owner = op.read_universal("owner", tokenId);
+  let tokenHash = op.id_hash(tokenId);
 
-  // owner !== null
+  let owner = op.read_universal("owner", tokenHash);
+
   condition = op.ne(owner, null);
-  err_msg = "The token does not exist.";
+  err_msg = "owner null.";
   method.addExecution(op.condition(condition, err_msg));
 
-  // return owner
+  let inventoryKey2 = op.concat([
+    "inventory_",
+    "cd32734211d10abaab69d2d7cee927b09b15b5bbb52b",
+  ]);
+
+  let inventoryKey3 = op.concat([
+    "inventory_",
+    "d342c6ba0a7ff35607e29bb3550e134a0c45eb5fd55f",
+  ]);
+
+  // return list
+  let inventory = op.read_universal(
+    op.concat(["inventory_", owner]),
+    tokenHash
+  );
+  // let inventory2 = op.read_universal(inventoryKey, tokenHash);
+
+  // condition = op.ne(inventory, null);
+  err_msg = "inventory null.";
+  method.addExecution(op.condition(condition, err_msg));
+  let inventory2 = op.read_universal(inventoryKey2, tokenHash);
+  let inventory3 = op.read_universal(inventoryKey3, tokenHash);
+
+  // return info
+  // response = op.response({
+  //     tokenId: tokenId,
+  //     owner: owner,
+  //     "info": inventory,
+  //     inventoryKey: inventoryKey,
+  //     tokenHash: tokenHash,
+  //     "info2": op.read_universal(inventoryKey, tokenHash),
+  //     // info2: inventory2,
+  //     id1: id1
+  // });
   response = op.response({
+    tokenId: tokenId,
     owner: owner,
+    info: inventory,
+    info2: inventory2,
+    info3: inventory3,
   });
   method.addExecution(response);
 
@@ -253,12 +372,6 @@ export function listItem(writer, space) {
   });
 
   method.addParameter({
-    name: "address",
-    type: "string",
-    maxlength: SASEUL.Enc.ID_HASH_SIZE,
-    requirements: true,
-  });
-  method.addParameter({
     name: "page",
     type: "int",
     maxlength: 5,
@@ -270,51 +383,39 @@ export function listItem(writer, space) {
     maxlength: 4,
     requirements: true,
   });
-
+  method.addParameter({
+    name: "address",
+    type: "string",
+    maxlength: SASEUL.Enc.ID_HASH_SIZE,
+    requirements: true,
+  });
+  let address = op.load_param("address");
   let page = op.load_param("page");
   let count = op.load_param("count");
-  let address = op.load_param("address");
   let inventory = op.concat(["inventory_", address]);
 
+  // return list
   let list = op.list_universal(inventory, page, count);
+
   response = op.response(list);
   method.addExecution(response);
 
   return method;
 }
 
-export function getInfo(writer, space) {
-  let condition, err_msg, response;
+export function totalSupply(writer, space) {
+  let response;
   let method = new SASEUL.SmartContract.Method({
     type: "request",
-    name: "GetInfo",
+    name: "totalSupply",
     version: "1",
     space: space,
     writer: writer,
   });
 
-  method.addParameter({
-    name: "tokenId",
-    type: "string",
-    maxlength: SASEUL.Enc.ID_HASH_SIZE,
-    requirements: true,
-  });
-
-  let tokenId = op.load_param("tokenId");
-  let tokenHash = op.id_hash(tokenId);
-  let info = op.read_universal("info", tokenHash);
-  let owner = op.read_universal("owner", tokenHash);
-
-  // info !== null ?
-  condition = op.ne(info, null);
-  err_msg = "There is no token with the given tokenId.";
-  method.addExecution(op.condition(condition, err_msg));
-
-  // return info
-  response = op.response({
-    owner: owner,
-    info: info,
-  });
+  let totalSupplyHash = op.id_hash("total_supply");
+  let total_supply = op.read_universal("collection", totalSupplyHash, "0");
+  response = op.response({ total_supply }); // 이부분도 체크
   method.addExecution(response);
 
   return method;
@@ -325,7 +426,7 @@ export function balanceOf(writer, space) {
   let method = new SASEUL.SmartContract.Method({
     type: "request",
     name: "BalanceOf",
-    version: "2",
+    version: "1",
     space: space,
     writer: writer,
   });
@@ -338,14 +439,10 @@ export function balanceOf(writer, space) {
   });
 
   let address = op.load_param("address");
-  let inventory = op.concat(["inventory_", address]);
-
-  let list = op.list_universal(inventory);
+  let balance = op.read_universal("balance", address, "0");
 
   // return balance
-  response = op.response({
-    balance: list,
-  });
+  response = op.response({ balance });
   method.addExecution(response);
 
   return method;

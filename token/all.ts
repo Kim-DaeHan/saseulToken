@@ -55,7 +55,6 @@ export function mint(writer: string, space: string, owner: string) {
 
   // writer === from
   condition = op.eq(writer, from);
-
   err_msg = "You are not the contract writer.";
   method.addExecution(op.condition(condition, err_msg));
 

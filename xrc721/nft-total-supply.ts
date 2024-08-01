@@ -1,8 +1,7 @@
 const SASEUL = require("saseul");
 
-export async function nftBalanceOf(
+export async function nftTotalSupply(
   space: string,
-  owner: string,
   peer: string,
   address: string,
   privateKey: string
@@ -16,8 +15,7 @@ export async function nftBalanceOf(
       SASEUL.Rpc.signedRequest(
         {
           cid: cid,
-          type: "BalanceOf",
-          address: owner,
+          type: "totalSupply",
         },
         privateKey
       )

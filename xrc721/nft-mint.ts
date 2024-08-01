@@ -3,7 +3,7 @@ const SASEUL = require("saseul");
 export async function nftMint(
   space: string,
   name: string,
-  tokenId: string,
+  tokenId: number,
   description: string,
   data: string,
   ext: string,
