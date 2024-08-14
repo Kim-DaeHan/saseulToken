@@ -1,9 +1,12 @@
 import Sign from "./xphere/sign";
 
+const SASEUL = require("SASEUL");
+
 console.log(Sign.keyPair());
 
 function xphereSign(msg, prKey) {
   const signature = Sign.signature(msg, prKey);
+
   return signature;
 }
 

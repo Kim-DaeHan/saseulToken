@@ -116,6 +116,15 @@ axios@^1.3.5:
     form-data "^4.0.0"
     proxy-from-env "^1.1.0"
 
+axios@^1.7.3:
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.7.3.tgz#a1125f2faf702bc8e8f2104ec3a76fab40257d85"
+  integrity sha512-Ar7ND9pU99eJ9GpoGQKhKf58GpUOgnzuaB7ueNQ5BMi0p+LZ5oaEnfF999fAArcTIBwXTCHAmGcHOZJaWPq9Nw==
+  dependencies:
+    follow-redirects "^1.15.6"
+    form-data "^4.0.0"
+    proxy-from-env "^1.1.0"
+
 braces@^3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/braces/-/braces-3.0.3.tgz#490332f40919452272d55a8480adc0c441358789"
@@ -183,6 +192,14 @@ delayed-stream@~1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/delayed-stream/-/delayed-stream-1.0.0.tgz"
   integrity sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==
+
+dh-test@^0.0.295:
+  version "0.0.295"
+  resolved "https://registry.yarnpkg.com/dh-test/-/dh-test-0.0.295.tgz#7c65994f442eb9e2baedc1f70249a5ac9c7ed2e6"
+  integrity sha512-AH5L5iLiwM9xwCHSkve17cs5cjq2IGpFiSyUHhzX5kvqaVfLpnL8IqN9AFqro/7QLf5BDoCGtqesKx9YrGe+lA==
+  dependencies:
+    axios "^1.7.3"
+    tweetnacl "^1.0.3"
 
 es-module-lexer@^1.2.1:
   version "1.5.3"

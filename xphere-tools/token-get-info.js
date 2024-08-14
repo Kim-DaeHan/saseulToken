@@ -26,6 +26,8 @@ const space = "hansToken";
   let cid = SASEUL.Enc.cid(keypair.address, space);
   let result;
 
+  console.log("aaaaaaaa");
+
   result = await SASEUL.Rpc.request(
     SASEUL.Rpc.signedRequest(
       {
@@ -36,5 +38,5 @@ const space = "hansToken";
     )
   );
 
-  console.dir(result);
+  // console.dir(result);
 })();

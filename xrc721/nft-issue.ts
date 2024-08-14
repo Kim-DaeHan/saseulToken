@@ -1,4 +1,4 @@
-const SASEUL = require("saseul");
+const SASEUL = require("dh-test");
 
 export async function nftIssue(
   space: string,

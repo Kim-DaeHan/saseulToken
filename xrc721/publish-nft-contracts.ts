@@ -1,4 +1,4 @@
-const SASEUL = require("saseul");
+const SASEUL = require("dh-test");
 
 import {
   issue,
@@ -24,16 +24,16 @@ export async function publishNft(
   let contract = Contract(address, space);
 
   await Promise.all([
-    // contract.addMethod(issue(address, space)),
-    // contract.addMethod(mint(address, space)),
-    // contract.addMethod(transfer(address, space)),
-    // contract.addMethod(ownerOf(address, space)),
-    // contract.addMethod(listItem(address, space)),
+    contract.addMethod(issue(address, space)),
+    contract.addMethod(mint(address, space)),
+    contract.addMethod(transfer(address, space)),
+    contract.addMethod(ownerOf(address, space)),
+    contract.addMethod(listItem(address, space)),
     contract.addMethod(getInfo(address, space)),
-    // contract.addMethod(balanceOf(address, space)),
-    // contract.addMethod(name(address, space)),
-    // contract.addMethod(symbol(address, space)),
-    // contract.addMethod(totalSupply(address, space)),
+    contract.addMethod(balanceOf(address, space)),
+    contract.addMethod(name(address, space)),
+    contract.addMethod(symbol(address, space)),
+    contract.addMethod(totalSupply(address, space)),
   ]);
 
   const result = await contract.publish(privateKey);
@@ -69,12 +69,14 @@ const Contract = function (writer, nonce) {
             rs.data.main.block.s_timestamp > timestamp
           ) {
             const code = await SASEUL.Rpc.request(
-              SASEUL.Rpc.signedRequest({
-                type: "GetCode",
-                ctype: method.type(),
-                target: method.mid(),
-              }),
-              SASEUL.Sign.privateKey()
+              SASEUL.Rpc.signedRequest(
+                {
+                  type: "GetCode",
+                  ctype: method.type(),
+                  target: method.mid(),
+                },
+                SASEUL.Sign.privateKey()
+              )
             );
 
             for (let i in code.data) {
@@ -105,6 +107,7 @@ const Contract = function (writer, nonce) {
           console.log("Failed. Resending code... " + thash);
           await broadcast(method);
         } else {
+          console.log("aaaa");
           console.dir(rs);
           return { publish: false, method: method._name, msg: rs.msg };
         }

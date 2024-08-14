@@ -29,7 +29,7 @@ const ConfigIniParser = require("config-ini-parser").ConfigIniParser;
       {
         type: "GetBalance",
         // address: "d342c6ba0a7ff35607e29bb3550e134a0c45eb5fd55f",
-        address: "cd32734211d10abaab69d2d7cee927b09b15b5bbb52b",
+        address: "900b550aed04bd2a5fff2ed0a71d732595e126632635",
       },
       "c0965d23e2c4d5745cdf2b1a5619e62cdec8f221d8b35555b1061641555aa17d"
     )

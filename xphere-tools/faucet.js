@@ -35,27 +35,27 @@ function sleep(ms) {
         {
           type: "Faucet",
         },
-        keypair.private_key
+        // keypair.private_key
+        "ad242f114b0bf83860dd9d250de312980c957bd78e01ce02a3e24eefeb3b9b17"
       )
     );
   } catch (error) {
-    console.log(error.message);
+    console.log("error: ", error);
   }
 
-  console.dir(result);
-  if (result.code === 200) {
-    await sleep(3000);
-  }
+  // if (result.code === 200) {
+  //   await sleep(3000);
+  // }
 
-  result = await SASEUL.Rpc.request(
-    SASEUL.Rpc.signedRequest(
-      {
-        type: "GetBalance",
-        address: keypair.address,
-      },
-      keypair.private_key
-    )
-  );
+  // result = await SASEUL.Rpc.request(
+  //   SASEUL.Rpc.signedRequest(
+  //     {
+  //       type: "GetBalance",
+  //       address: keypair.address,
+  //     },
+  //     keypair.private_key
+  //   )
+  // );
   // console.dir("Current Balance: " + result.data.balance);
-  console.dir("Current Balance: " + JSON.stringify(result));
+  // console.dir("Current Balance: " + JSON.stringify(result));
 })();

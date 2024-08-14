@@ -15,7 +15,7 @@ const privateKey =
   "eef6ecd35a4c70520ffaecf2b3d84e2160c5389500551641af78aa739c4f1c46";
 // const privateKey =
 //   "67a33840282655346d047e6c83cce778a8477199d624f2834a8eb6df2ec71031";
-const space = "nft test 1";
+const space = "nft test 6";
 
 async function main(
   space: string,
@@ -57,8 +57,8 @@ async function main(
   // );
   // console.log("transfer: ", transfer);
 
-  const getInfoRes = await nftGetInfo(space, 1, peer, address, privateKey);
-  console.log("nftGetInfo: ", getInfoRes);
+  // const getInfoRes = await nftGetInfo(space, 1, peer, address, privateKey);
+  // console.log("nftGetInfo: ", getInfoRes);
 
   // const balance = await nftBalanceOf(space, address, peer, address, privateKey);
   // console.log("balance1: ", balance);
