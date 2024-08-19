@@ -19,6 +19,7 @@ export async function publishToken(
   owner: string
 ) {
   SASEUL.Rpc.endpoint(peer);
+  let cid = SASEUL.Enc.cid(address, space);
 
   let contract = Contract(address, space);
 
@@ -36,6 +37,7 @@ export async function publishToken(
   const result = await contract.publish(privateKey);
   const isPublish = result.find((publish) => !publish.publish);
   console.log("result: ", result);
+  console.log("cid: ", cid);
   return isPublish;
 }
 

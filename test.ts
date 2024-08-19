@@ -1,4 +1,4 @@
-import XPHERE from "dh-test";
+import XPHERE from "xphere";
 
 async function test() {
   const peer = "43.225.140.61";
@@ -25,7 +25,10 @@ async function test() {
   }
 }
 
-test();
+const keypair = XPHERE.Sign.keyPair();
+console.log(keypair);
+
+// test();
 // console.log(XPHERE.Enc.hash("aaaa"));
 // console.log(SASEUL.Enc.hash("aaaa"));
 

@@ -49,9 +49,9 @@ export function mint(writer: string, space: string, owner: string) {
   let info = op.read_universal("info", "00");
 
   // info === null
-  condition = op.eq(info, null);
-  err_msg = "The token can only be issued once.";
-  method.addExecution(op.condition(condition, err_msg));
+  // condition = op.eq(info, null);
+  // err_msg = "The token can only be issued once.";
+  // method.addExecution(op.condition(condition, err_msg));
 
   // writer === from
   condition = op.eq(writer, from);
@@ -101,9 +101,9 @@ export function getInfo(writer: string, space: string) {
   let info = op.read_universal("info", "00");
 
   // info !== null ?
-  condition = op.ne(info, null);
-  err_msg = "The token has not been issued yet.";
-  method.addExecution(op.condition(condition, err_msg));
+  // condition = op.ne(info, null);
+  // err_msg = "The token has not been issued yet.";
+  // method.addExecution(op.condition(condition, err_msg));
 
   // return info
   response = op.response(info);

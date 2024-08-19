@@ -571,6 +571,14 @@ web-streams-polyfill@^3.0.3:
   resolved "https://registry.yarnpkg.com/web-streams-polyfill/-/web-streams-polyfill-3.3.3.tgz#2073b91a2fdb1fbfbd401e7de0ac9f8214cecb4b"
   integrity sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==
 
+xphere@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/xphere/-/xphere-1.0.2.tgz#3c7df2bf338de075d676163126d2cb4662260cf7"
+  integrity sha512-Tj3KeHCMca7a6NYuYEGj/nuus2ZPBpt9E6gMFjfutoqwFSnA+OOyCJtrEUXdeCh/FtSk5Iam6zCyRQL9y3agLQ==
+  dependencies:
+    axios "^1.7.3"
+    tweetnacl "^1.0.3"
+
 zigap-utils@^0.0.30:
   version "0.0.30"
   resolved "https://registry.yarnpkg.com/zigap-utils/-/zigap-utils-0.0.30.tgz#3e1f2d52b5b9cfd5b7633e46d949a671da44c671"

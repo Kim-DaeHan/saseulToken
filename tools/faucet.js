@@ -33,7 +33,8 @@ function sleep(ms) {
         {
           type: "Faucet",
         },
-        keypair.private_key
+        // keypair.private_key
+        "6f5b43a28add17cf1517fb2586c690d8b886aa049c0ac50e89404b571fabe1d9"
       )
     );
   } catch (error) {

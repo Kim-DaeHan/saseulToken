@@ -9,7 +9,7 @@ const privateKey =
   "eef6ecd35a4c70520ffaecf2b3d84e2160c5389500551641af78aa739c4f1c46";
 // const privateKey =
 //   "67a33840282655346d047e6c83cce778a8477199d624f2834a8eb6df2ec71031";
-const space = "test45552225";
+const space = "aa1cxz2311aaaㅋㅋㅋ1";
 
 async function main(
   space: string,
@@ -17,24 +17,22 @@ async function main(
   address: string,
   privateKey: string
 ) {
-  const publish = await publishToken(space, peer, address, privateKey, owner);
-
-  if (publish) {
-    console.error(publish.method, " 에서 이런 에러", publish.msg);
-    return;
-  }
+  // const publish = await publishToken(space, peer, address, privateKey, owner);
+  // if (publish) {
+  //   console.error(publish.method, " 에서 이런 에러", publish.msg);
+  //   return;
+  // }
 
   const res = await mintToken(
     space,
-    "TestToken3333",
-    "t3",
+    "testㅅㅇㄷㅇ",
+    "t3222",
     "1000000000000000000000",
     18,
     peer,
     address,
     privateKey
   );
-
   console.log("res: ", res);
 }
 

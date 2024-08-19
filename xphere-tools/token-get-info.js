@@ -31,12 +31,12 @@ const space = "hansToken";
   result = await SASEUL.Rpc.request(
     SASEUL.Rpc.signedRequest(
       {
-        cid: "0e1377abc5e876bdf4f0b03f52c307a9a5add9de159496433ca8432997d509b6",
+        cid: "65c2c713828a832b0506693390452e5e4a4c0f0572e6035ec86c6eda0cefdd36",
         type: "GetInfo",
       },
       keypair.private_key
     )
   );
 
-  // console.dir(result);
+  console.dir(result);
 })();
